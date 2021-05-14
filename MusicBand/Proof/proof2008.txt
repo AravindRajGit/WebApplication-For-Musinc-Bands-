@@ -1,0 +1,78 @@
+<%@page import="java.sql.ResultSet"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<jsp:useBean class="Database.ConnectionClass" id="obj"></jsp:useBean>
+
+
+<%
+    if(request.getParameter("btnchange")!=null)
+    {
+     String userid=session.getAttribute("userid").toString();
+     String cpassword="", ePassword="",newPassword="",CnewPassword="";
+        String sel="select * from tbl_userreg where user_id='"+userid+"'";
+        //System.out.println(sel);
+        ResultSet rs=obj.selectCommand(sel);
+        if(rs.next())
+        {
+        
+        cpassword=rs.getString("user_password");
+        }
+        ePassword=request.getParameter("txtPassword");
+        
+        
+        if(cpassword.equals(ePassword))
+        {
+           newPassword=request.getParameter("txtnpassword");
+           CnewPassword=request.getParameter("txtcopassword");
+        if(newPassword.equals(CnewPassword))
+        {
+        String up="update tbl_userreg set user_password='"+newPassword+"' where user_id='"+userid+"'";
+        //System.out.println(up);
+        obj.executeCommand(up);
+        out.println("Updated Successfully");
+        }
+        
+        else
+        {
+        out.println("New Password Mismatch");
+        }
+    }
+        else
+            
+        {
+            out.println("Current Password Mismatch");
+        }
+    }
+    %>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>User Change Password</title>
+    </head>
+    
+    <body>
+        <h1>Change Password</h1>
+        <form method="post">
+            <table border="1">
+                <tr>
+                <td>Current Password</td>
+                <td><input type="password" name="txtPassword" id="txtPassword" autofocus="autofocus" required="required"</td>
+            </tr>
+            <tr>
+                <td>New Password</td>
+                <td><input type="password" name="txtnpassword" id="txtnpassword" required="required"</td>
+            </tr>
+            <tr>
+                <td>Confirm Password</td>
+                <td><input type="password" name="txtcopassword" id="txtcopassword" required="required"</td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="reset" name="btncancel" id="btncancel" value="Cancel">
+                    <input type="submit" name="btnchange" id="btnchange" value="Change">
+                </td>
+            </tr>
+            </table>    
+        </form>
+    </body>
+</html>
